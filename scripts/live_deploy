@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+
+# Get tag from param
+if [ $# -eq 1 ]; then
+	GIT_TAG=$1
+else
+	echo "Git tag param not set"
+	exit 14
+fi
+
+Cmds="$(cat <<END_HEREDOC
+echo "Run Live site deployment ..."
+
+# Change directory
+cd esomar
+
+# Activate NodeJS
+export LANG=en_US.utf-8
+export LC_ALL=en_US.utf-8
+source ~/.nvm/nvm.sh
+# Set environment
+set -e
+
+echo "Check NodeJS version ..."
+nvm install
+echo "Switching to appropriate node.js version using nvm"
+if ! nvm use ; then
+  echo "Error using nvm to switch node.js version."
+  exit 14
+fi
+
+echo "Git tag $GIT_TAG ..."
+echo "Git tag $APOS_MONGODB_URI ..."
+exit 0
+
+echo "Stop management services ..."
+pm2 stop ecosystem.config.js
+
+# Check remote result
+if ~/deploy/run.sh $GIT_TAG >~/deploy/live.log; then
+  echo "Live site deployment success."
+else
+  echo "Live site deployment failed."
+  echo "For more information see ~/deploy/live.log"
+  #echo "Restart services ..."
+  #pm2 restart ecosystem.config.js
+  exit 14
+fi
+
+echo "Pull source code ..."
+git checkout main
+git reset --hard HEAD
+git pull origin main
+
+# Get new tags from remote
+git fetch --tags -f
+
+# Check if the exact tag exists
+if git rev-parse -q --verify "refs/tags/$GIT_TAG" >/dev/null; then
+  echo "Git tag $GIT_TAG exists."
+else
+  echo "Git tag $GIT_TAG does not exist."
+  exit 14
+fi
+
+echo "Checkout latest tag [ $GIT_TAG ]"
+git checkout $GIT_TAG
+
+echo "Install or update PM2 ..."
+npm i pm2 -g
+
+echo "Update PM2 in memory ..."
+pm2 update
+
+#echo "Root app modules ..."
+NODE_ENV=production npm ci
+
+echo "Install package dependencies ..."
+NODE_ENV=production npm run bootstrap
+
+echo "Build for production ..."
+cd packages/esomar_org ; APOS_RELEASE_ID=v1.2.0 npm run build:prod
+
+echo "Execute DB migrations ..."
+node app @apostrophecms/migration:migrate
+
+echo "Restart services ..."
+cd ../.. ; pm2 restart ecosystem.config.js
+
+echo "Restart Live services ..."
+pm2 restart live.config.js
+
+echo "End deployment ..."
+END_HEREDOC
+)"
+
+ssh managesite@20.82.0.189 -o StrictHostKeyChecking=No -t -t "$Cmds"
