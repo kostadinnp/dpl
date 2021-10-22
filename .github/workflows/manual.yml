@@ -18,5 +18,4 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.STAGING_DEPLOY_KEY }}
 
-    - name: Live deploy
-      run: ./scripts/live_deploy ${{ github.event.inputs.git_tag }}"
+    - run: ./scripts/live_deploy ${{ github.event.inputs.git_tag }}"
