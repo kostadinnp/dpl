@@ -30,7 +30,7 @@ if ! nvm use ; then
 fi
 
 echo "Git tag $GIT_TAG ..."
-echo "MongoDB URI ${APOS_MONGODB_URI} ..."
+echo "MongoDB URI \$APOS_MONGODB_URI ..."
 exit 0
 
 echo "Stop management services ..."
