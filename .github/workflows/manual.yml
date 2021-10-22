@@ -13,10 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Live deploy
     - uses: actions/checkout@v2
     - uses: webfactory/ssh-agent@v0.4.1
       with:
         ssh-private-key: ${{ secrets.STAGING_DEPLOY_KEY }}
 
+    - name: Live deploy
       run: ./scripts/live_deploy ${{ github.event.inputs.git_tag }}"
