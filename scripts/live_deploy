@@ -31,6 +31,7 @@ fi
 
 echo "Git tag $GIT_TAG ..."
 echo "Git tag $APOS_MONGODB_URI ..."
+env
 exit 0
 
 echo "Stop management services ..."
