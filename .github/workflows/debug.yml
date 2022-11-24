@@ -1,7 +1,7 @@
 name: PR Staging deploy
 
 on:
-  workflow_dispatch:
+  workflow_dispatch
 
 env:
   ENV: staging
@@ -16,4 +16,4 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
-      - run: echo "Running on branch: ${{ steps.branch-name.outputs.current_branch }}"
+      - run: echo running on branch ${GITHUB_REF##*/}
