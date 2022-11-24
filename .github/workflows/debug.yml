@@ -13,4 +13,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - run: echo running on branch ${{ steps.branch.outputs.branch_name }}
+      - run: echo running on branch ${{ github.ref_name }}
