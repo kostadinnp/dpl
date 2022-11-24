@@ -1,0 +1,19 @@
+name: PR Staging deploy
+
+on:
+  workflow_dispatch:
+
+env:
+  ENV: staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: webfactory/ssh-agent@v0.4.1
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - run: echo "Running on branch: ${{ steps.branch-name.outputs.current_branch }}"
