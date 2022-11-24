@@ -2,7 +2,8 @@ name: PR Staging deploy
 
 on:
   workflow_dispatch:
-    description: 'Select PR branch to deploy...'
+    inputs:
+      description: 'Select PR branch to deploy...'
 
 env:
   ENV: staging
