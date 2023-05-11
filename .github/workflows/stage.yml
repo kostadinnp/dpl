@@ -17,4 +17,5 @@ jobs:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
         env:
           DEPLOY_USER: ${{ vars.DEPLOY_USER }}
-      - run: ./scripts/stage
+      - run: echo "DEPLOY_USER: $DEPLOY_USER"
+      #- run: ./scripts/stage
