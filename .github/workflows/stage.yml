@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  # Setting an environment variable with the value of a configuration variable
-  env_var: ${{ vars.ENV_CONTEXT_VAR }}
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -21,5 +17,4 @@ jobs:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
         env:
           DEPLOY_USER: ${{ vars.DEPLOY_USER }}
-      - run: echo "DEPLOY_USER1: $DEPLOY_USER"
-      #- run: ./scripts/stage
+      - run: ./scripts/stage
