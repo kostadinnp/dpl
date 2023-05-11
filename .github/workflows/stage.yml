@@ -15,4 +15,6 @@ jobs:
       - uses: webfactory/ssh-agent@v0.4.1
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+        env:
+          DEPLOY_USER: ${{ vars.DEPLOY_USER }}
       - run: ./scripts/stage
